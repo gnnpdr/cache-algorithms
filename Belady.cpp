@@ -12,20 +12,20 @@ private:
     struct CacheCell
     {
         int key;
-        int match_cnt;
+        int next_pos;
 
         bool operator<(const CacheCell& other) const
         {
-            return match_cnt <= other.match_cnt;
+            return next_pos >= other.next_pos;
         }
     };
 
     std::vector<int> requests;
     std::set<CacheCell> cache_set;
     std::unordered_map<int, std::set<CacheCell>::iterator> cells_table; 
-    size_t capacity;
-    //size_t cur_pos = 0;
-    size_t test_match_cnt = 0;
+    size_t capacity = 0;
+    size_t cur_pos = 0;
+    size_t total_match_cnt = 0;
 
     using the_cell = std::set<CacheCell>::iterator;
 
@@ -35,53 +35,67 @@ public:
 
     size_t cache_push(int key)
     {
+        cur_pos++;
         the_cell new_cell_it;
-        //std::cout << "pos: " << pos << std::endl;
-        //std::cout << "START size " << cache_set.size() << " cap " << capacity << std::endl;
         
         auto it = cells_table.find(key);
         if (it == cells_table.end())
         {
-            //std::cout << "dis " << key << " pos " << cur_pos << std::endl;
-            
-            if (cache_set.size() >= capacity)
-            {
-                auto del_cell = cache_set.begin();
-                //std::cout << "del " << del_cell->key << std::endl;
-                cells_table.erase(del_cell->key);
-                cache_set.erase(del_cell);
-            }
-
-            CacheCell new_cell{key, 1};           //нельзя, чтобы функция запрашивала позицию, может, стоит сделать эту переменную глобальной
-            new_cell_it = cache_set.insert(new_cell).first;
-            
+            new_cell_it = list_push(key);
         }
         else
         {
-            //std::cout << "match " << key << " pos " << cur_pos << std::endl;
-            test_match_cnt++;
-            CacheCell the_cell = *it->second;
-            cache_set.erase(it->second);
-            the_cell.match_cnt++;
-            new_cell_it = cache_set.insert(the_cell).first;
+            total_match_cnt++;
+            new_cell_it = list_move(key);
         }
         cells_table[key] = new_cell_it;
 
-        //std::cout << "END size " << cache_set.size() << " cap " << capacity << std::endl;
-        print_cache();
-        std::cout << std::endl;
+        //print_cache();
+        //std::cout << std::endl;
 
-        return test_match_cnt;
+        return total_match_cnt;
     } 
 
 private:
 
-    int find_next_pos(int key, size_t pos)
+    the_cell list_move(int key)
     {
-        for (int i = pos; i < requests.size(); i++)
+        auto it = cells_table.find(key);
+        CacheCell the_cell = *it->second;
+        cache_set.erase(it->second);
+        the_cell.next_pos = find_next_pos(key, cur_pos + 1);
+
+        if (find_next_pos(key, cur_pos + 1) == MAX_CACHE_SIZE)
+            the_cell.next_pos = MAX_CACHE_SIZE;
+
+        return cache_set.insert(the_cell).first;
+    }
+
+    the_cell list_push(int key)
+    {
+        if (cache_set.size() >= capacity)
+            del_page();
+
+        CacheCell new_cell{key, find_next_pos(key, cur_pos + 1)};
+        if (find_next_pos(key, cur_pos + 1) == MAX_CACHE_SIZE)
+            new_cell.next_pos = MAX_CACHE_SIZE;
+
+        return cache_set.insert(new_cell).first;
+    }
+
+    void del_page()
+    {
+        auto del_cell = cache_set.begin();
+        cells_table.erase(del_cell->key);
+        cache_set.erase(del_cell);
+    }
+
+    int find_next_pos(int key, size_t cur_pos)
+    {
+        for (size_t pos = cur_pos; pos < requests.size(); pos++)
         {
-            if (key == requests[i])
-                return i;
+            if (key == requests[pos])
+                return pos;
         }
 
         return MAX_CACHE_SIZE;
@@ -89,12 +103,9 @@ private:
 
     void print_cache()
     {
-
         for (const auto& element : cache_set)
-        {
             std::cout << element.key << " " ;
-        }
-
+        
         std::cout << std::endl;
     }
 };
@@ -114,9 +125,7 @@ public:
             passed_test_amt++;
         else
         {
-            std::cout << "test " << total_test_amt << " failed. ";
-            std::cout << "expected " << expected_res;
-            std::cout << ". received " << res << std::endl;
+            std::cout << "test " << total_test_amt << " failed. " << "Expected " << expected_res << " Received " << res << std::endl;
         }
     }
 
@@ -141,22 +150,20 @@ void run_Belady_tests()
     std::vector<int> reqs1 = {1, 2, 1, 2, 1, 2};
     BeladyCache cache1(2, reqs1);
 
-    for (int i = 0; i < 2; i++)         //проверяем прогрев кэша
+    for (int i = 0; i < 2; i++)
     {
         int k = reqs1[i];
         matches = cache1.cache_push(k);
     }
     runner.test(matches, 0);
 
-    for (int i = 2; i < el_amt; i++)        //проверяем количество попаданий в конкретном примере
+    for (int i = 2; i < el_amt; i++) 
     {
         int k = reqs1[i];
         matches = cache1.cache_push(k);
     }
     runner.test(matches, 4);
 
-
-    std::cout << "NEW TEST" << std::endl;
     std::cout << std::endl;
     matches = 0;
     el_amt = 10;
@@ -169,7 +176,6 @@ void run_Belady_tests()
     }
     runner.test(matches, 5);
 
-    std::cout << "NEW TEST" << std::endl;
     std::cout << std::endl;
     matches = 0;
     el_amt = 9;
@@ -180,22 +186,26 @@ void run_Belady_tests()
         int k = reqs3[i];
         matches = cache3.cache_push(k);
     }
-    runner.test(matches, 2);
+    runner.test(matches, 3);
 
     runner.print_results();
 }
 
 
 int main()
-{//
+{
     //size_t cap = 0;
+    //std::cout << "enter capacity" << std::endl;
     //std::cin >> cap;
     //size_t el_amt = 0;
+    //std::cout << "enter elements amount" << std::endl;
     //std::cin >> el_amt;
     //std::vector<int> reqs;
+    //std::cout << "enter elements" << std::endl;
     //for (int i = 0; i < el_amt; i++)
     //{
     //    int k = 0;
+    //
     //    std::cin >> k;
     //    reqs.push_back(k);
     //}
@@ -208,7 +218,7 @@ int main()
     //}
     //std::cout << "matches: " << matches << std::endl; 
 
-    run_Belady_tests();
+    //run_Belady_tests();
     
     return 0;
 }
