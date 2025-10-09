@@ -12,11 +12,11 @@ private:
     struct CacheCell
     {
         int key;
-        int next_pos;
+        int match_cnt;
 
         bool operator<(const CacheCell& other) const
         {
-            return next_pos >= other.next_pos;
+            return match_cnt <= other.match_cnt;
         }
     };
 
@@ -24,8 +24,8 @@ private:
     std::set<CacheCell> cache_set;
     std::unordered_map<int, std::set<CacheCell>::iterator> cells_table; 
     size_t capacity;
-    size_t cur_pos = 0;
-    size_t match_cnt = 0;
+    //size_t cur_pos = 0;
+    size_t test_match_cnt = 0;
 
     using the_cell = std::set<CacheCell>::iterator;
 
@@ -35,7 +35,6 @@ public:
 
     size_t cache_push(int key)
     {
-        cur_pos++;
         the_cell new_cell_it;
         //std::cout << "pos: " << pos << std::endl;
         //std::cout << "START size " << cache_set.size() << " cap " << capacity << std::endl;
@@ -53,32 +52,17 @@ public:
                 cache_set.erase(del_cell);
             }
 
-            if (find_next_pos(key, cur_pos + 1) != MAX_CACHE_SIZE)
-            {
-                CacheCell new_cell{key, find_next_pos(key, cur_pos + 1)};           //нельзя, чтобы функция запрашивала позицию, может, стоит сделать эту переменную глобальной
-                new_cell_it = cache_set.insert(new_cell).first;
-            }
-            else
-            {
-                CacheCell new_cell{key, MAX_CACHE_SIZE};           //нельзя, чтобы функция запрашивала позицию, может, стоит сделать эту переменную глобальной
-                new_cell_it = cache_set.insert(new_cell).first;
-            }
+            CacheCell new_cell{key, 1};           //нельзя, чтобы функция запрашивала позицию, может, стоит сделать эту переменную глобальной
+            new_cell_it = cache_set.insert(new_cell).first;
+            
         }
         else
         {
             //std::cout << "match " << key << " pos " << cur_pos << std::endl;
-            match_cnt++;
+            test_match_cnt++;
             CacheCell the_cell = *it->second;
             cache_set.erase(it->second);
-            if (find_next_pos(key, cur_pos + 1) != MAX_CACHE_SIZE)
-            {
-                the_cell.next_pos = find_next_pos(key, cur_pos + 1);
-            }
-            else
-            {
-                //надо копировать элемент? он удаляется и новый не создаеется
-                the_cell =  {key, MAX_CACHE_SIZE};
-            }
+            the_cell.match_cnt++;
             new_cell_it = cache_set.insert(the_cell).first;
         }
         cells_table[key] = new_cell_it;
@@ -87,7 +71,7 @@ public:
         print_cache();
         std::cout << std::endl;
 
-        return match_cnt;
+        return test_match_cnt;
     } 
 
 private:
@@ -196,7 +180,7 @@ void run_Belady_tests()
         int k = reqs3[i];
         matches = cache3.cache_push(k);
     }
-    runner.test(matches, 3);
+    runner.test(matches, 2);
 
     runner.print_results();
 }
