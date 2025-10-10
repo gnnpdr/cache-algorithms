@@ -1,0 +1,38 @@
+#pragma once
+
+#include "Belady.hpp"
+
+const size_t START_MATCH_VAL = 1;
+
+class LFUCache
+{
+private:
+public:
+    struct CacheCell
+    {
+        int key;
+        int match_cnt;
+
+        bool operator<(const CacheCell& other) const
+        {
+            return match_cnt <= other.match_cnt;
+        }
+    };
+    using the_cell = std::set<CacheCell>::iterator;
+
+private:
+    std::vector<int> requests;
+    std::set<CacheCell> cache_set;
+    std::unordered_map<int, std::set<CacheCell>::iterator> cells_table; 
+    size_t capacity;
+    size_t total_match_cnt = 0;
+
+public:
+    LFUCache(size_t capacity, std::vector<int> requests);
+
+    size_t cache_push(int key);
+    the_cell list_move(int key);
+    the_cell list_push(int key);
+    void del_page();
+    void print_cache();
+};
