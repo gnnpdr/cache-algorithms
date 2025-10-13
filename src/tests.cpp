@@ -23,6 +23,8 @@ void TestRunner::print_results()
 
 void run_Belady_tests()
 {
+    std::cout << "RUN BELADY TESTS!" << std::endl;
+
     TestRunner runner;
     size_t matches = 0;
 
@@ -44,7 +46,6 @@ void run_Belady_tests()
     }
     runner.test(matches, 4);
 
-    std::cout << std::endl;
     matches = 0;
     el_amt = 10;
     std::vector<int> reqs2 = {1, 2, 3, 1, 2, 3, 4, 4, 4, 7};
@@ -56,7 +57,6 @@ void run_Belady_tests()
     }
     runner.test(matches, 5);
 
-    std::cout << std::endl;
     matches = 0;
     el_amt = 9;
     std::vector<int> reqs3 = {1, 2, 3, 7, 2, 5, 3, 5, 1};
@@ -73,32 +73,33 @@ void run_Belady_tests()
 
 void run_LFU_tests()
 {
+    std::cout << "RUN LFU TESTS!" << std::endl;
+    
     TestRunner runner;
     size_t matches = 0;
 
     size_t el_amt = 6;
     std::vector<int> reqs1 = {1, 2, 1, 2, 1, 2};
-    BeladyCache cache1(2, reqs1);
+    LFUCache cache1(2, reqs1);
 
-    for (int i = 0; i < 2; i++)         //проверяем прогрев кэша
+    for (int i = 0; i < 2; i++)
     {
         int k = reqs1[i];
         matches = cache1.cache_push(k);
     }
     runner.test(matches, 0);
 
-    for (int i = 2; i < el_amt; i++)        //проверяем количество попаданий в конкретном примере
+    for (int i = 2; i < el_amt; i++)
     {
         int k = reqs1[i];
         matches = cache1.cache_push(k);
     }
     runner.test(matches, 4);
 
-    std::cout << std::endl;
     matches = 0;
     el_amt = 10;
     std::vector<int> reqs2 = {1, 2, 3, 1, 2, 3, 4, 4, 4, 7};
-    BeladyCache cache2(5, reqs2);
+    LFUCache cache2(5, reqs2);
     for (int i = 0; i < el_amt; i++)
     {
         int k = reqs2[i];
@@ -106,11 +107,10 @@ void run_LFU_tests()
     }
     runner.test(matches, 5);
 
-    std::cout << std::endl;
     matches = 0;
     el_amt = 9;
     std::vector<int> reqs3 = {1, 2, 3, 7, 2, 5, 3, 5, 1};
-    BeladyCache cache3(3, reqs3);
+    LFUCache cache3(3, reqs3);
     for (int i = 0; i < el_amt; i++)
     {
         int k = reqs3[i];

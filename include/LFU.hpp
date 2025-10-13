@@ -6,7 +6,6 @@ const size_t START_MATCH_VAL = 1;
 
 class LFUCache
 {
-private:
 public:
     struct CacheCell
     {

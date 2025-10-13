@@ -19,9 +19,6 @@ size_t LFUCache::cache_push(int key)
     }
     cells_table[key] = new_cell_it;
 
-    print_cache();
-    std::cout << std::endl;
-
     return total_match_cnt;
 } 
 
@@ -54,7 +51,7 @@ void LFUCache::del_page()
 void LFUCache::print_cache()
 {
     for (const auto& element : cache_set)
-        std::cout << element.key << " " ;
+        std::cout << element.key << " ";
 
     std::cout << std::endl;
 }

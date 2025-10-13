@@ -10,5 +10,5 @@ SET(SRCS
 add_library(lib STATIC ${SRCS})
 target_include_directories(lib PUBLIC "include")
 
-add_executable(cool main.cpp)
-target_link_libraries(cool PRIVATE lib)     #делаем ссылку на библиотеку, чтобы можно было скомпилировать cpp файлы из нее
+add_executable(prog main.cpp)
+target_link_libraries(prog PRIVATE lib)     #делаем ссылку на библиотеку, чтобы можно было скомпилировать cpp файлы из нее
