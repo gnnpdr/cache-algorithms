@@ -1,6 +1,6 @@
 #include "../include/LFU.hpp"
 
-LFUCache::LFUCache(size_t capacity, std::vector<int> requests) : capacity(capacity), requests(requests) {}
+LFUCache::LFUCache(size_t capacity, size_t el_amt, std::vector<int> requests) : capacity(capacity), el_amt(el_amt), requests(requests) {}
 using the_cell = std::set<LFUCache::CacheCell>::iterator;
 
 size_t LFUCache::cache_push(int key)
@@ -54,4 +54,35 @@ void LFUCache::print_cache()
         std::cout << element.key << " ";
 
     std::cout << std::endl;
+}
+
+LFUCache LFU_cache_ctor()
+{
+    size_t cap = 0;
+    std::cin >> cap;
+
+    size_t el_amt = 0;
+    std::cin >> el_amt;
+
+    std::vector<int> reqs;
+    for (int i = 0; i < el_amt; i++)
+    {
+        int k = 0;
+        std::cin >> k;
+        reqs.push_back(k);
+    }
+
+    return LFUCache(cap, el_amt, reqs);
+}
+
+void LFUCache::run_cache()
+{
+    size_t matches = 0;
+    for (int i = 0; i < el_amt; i++)
+    {
+        int k = requests[i];
+        matches = cache_push(k);
+    }
+    
+    std::cout << "matches: " << matches << std::endl;
 }

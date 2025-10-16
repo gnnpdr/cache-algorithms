@@ -1,6 +1,6 @@
 #include "../include/Belady.hpp"
 
-BeladyCache::BeladyCache(size_t capacity, std::vector<int> requests) : capacity(capacity), requests(requests) {}
+BeladyCache::BeladyCache(size_t capacity, size_t el_amt, std::vector<int> requests) : capacity(capacity), el_amt(el_amt), requests(requests) {}
 using the_cell = std::set<BeladyCache::CacheCell>::iterator;
 
 size_t BeladyCache::cache_push(int key)
@@ -19,6 +19,9 @@ size_t BeladyCache::cache_push(int key)
         new_cell_it = list_move(key);
     }
     cells_table[key] = new_cell_it;
+
+    //print_cache();
+    //std::cout << std::endl;
 
     return total_match_cnt;
 } 
@@ -73,3 +76,33 @@ void BeladyCache::print_cache()
     std::cout << std::endl;
 }
 
+BeladyCache Belady_cache_ctor()
+{
+    size_t cap = 0;
+    std::cin >> cap;
+
+    size_t el_amt = 0;
+    std::cin >> el_amt;
+
+    std::vector<int> reqs;
+    for (int i = 0; i < el_amt; i++)
+    {
+        int k = 0;
+        std::cin >> k;
+        reqs.push_back(k);
+    }
+
+    return BeladyCache(cap, el_amt, reqs);
+}
+
+void BeladyCache::run_cache()
+{
+    size_t matches = 0;
+    for (int i = 0; i < el_amt; i++)
+    {
+        int k = requests[i];
+        matches = cache_push(k);
+    }
+    
+    std::cout << "matches: " << matches << std::endl;
+}
