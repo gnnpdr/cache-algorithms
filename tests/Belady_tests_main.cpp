@@ -3,9 +3,8 @@
 
 int main()
 {
-    TestRunner Belady_test_runner(Belady_tests);
-    
-    Belady_test_runner.full_test();
+    auto test_runner = TestRunner<BeladyCache>();
+    test_runner.run_tests();
     
     return 0;
 }

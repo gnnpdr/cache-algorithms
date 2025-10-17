@@ -27,6 +27,7 @@ private:
     size_t cur_pos = 0;
     size_t total_match_cnt = 0;
     size_t el_amt = 0;
+
     std::vector<int> requests;
     std::set<CacheCell> cache_set;
     std::unordered_map<int, std::set<CacheCell>::iterator> cells_table; 
@@ -39,8 +40,8 @@ public:
     the_cell list_push(int key);
     void del_page();
     int find_next_pos(int key, size_t cur_pos);
-    void print_cache();
-    void run_cache();
-};
 
-BeladyCache Belady_cache_ctor();
+    size_t get_el_amt() const {return el_amt;}
+    const std::vector<int>& get_requests() const {return requests;}
+    const std::set<CacheCell>& get_cache_set() const {return cache_set;}
+};

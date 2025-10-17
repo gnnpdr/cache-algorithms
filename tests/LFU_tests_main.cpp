@@ -3,9 +3,8 @@
 
 int main()
 {
-    TestRunner LFU_test_runner(LFU_tests);
-    
-    LFU_test_runner.full_test();
+    auto test_runner = TestRunner<LFUCache>();
+    test_runner.run_tests();
     
     return 0;
 }

@@ -1,10 +1,11 @@
-#include "include/LFU.hpp"
+#include "include/common.hpp"
 
 int main()
 {
-    auto cache = LFU_cache_ctor();
+    auto cache = cache_ctor<LFUCache>();
 
-    cache.run_cache();
-    
+    size_t matches = run_cache(cache);
+    std::cout << "matches: " << matches << std::endl;
+
     return 0;
 }

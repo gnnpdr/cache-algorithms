@@ -1,10 +1,11 @@
-#include "include/Belady.hpp"
+#include "include/common.hpp"
 
 int main()
 {
-    auto cache = Belady_cache_ctor();
+    auto cache = cache_ctor<BeladyCache>();
 
-    cache.run_cache();
-    
+    size_t matches = run_cache(cache);
+    std::cout << "matches: " << matches << std::endl;
+
     return 0;
 }
