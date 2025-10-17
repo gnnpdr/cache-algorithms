@@ -12,7 +12,7 @@ CacheType cache_ctor()
     std::cin >> el_amt;
 
     std::vector<int> reqs;
-    for (int i = 0; i < el_amt; i++)
+    for (size_t i = 0; i < el_amt; i++)
     {
         int k = 0;
         std::cin >> k;
@@ -39,7 +39,7 @@ size_t run_cache(CacheType& cache)
     auto reqs = cache.get_requests();
 
     size_t matches = 0;
-    for (int i = 0; i < el_amt; i++)
+    for (size_t i = 0; i < el_amt; i++)
     {
         int k = reqs[i];
         matches = cache.cache_push(k);

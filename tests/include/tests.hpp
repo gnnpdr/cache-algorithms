@@ -58,7 +58,6 @@ struct TestDataSelector<LFUCache>
     }
 };
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 template<typename CacheType>
 class TestRunner
@@ -113,8 +112,8 @@ void TestRunner<CacheType>::print_results()
 {
     if (total_test_amt != passed_test_amt)
     {
-        std::cout << passed_test_amt << " out of " << total_test_amt << " tests passed\nDO SOMETHING WITH IT" << std::endl;
+        std::cout << passed_test_amt << " out of " << total_test_amt << " tests passed" << std::endl;
     }
     else
-        std::cout << "ALL TESTS PASSED CONGRATULATIONS!" << std::endl;
+        std::cout << "ALL TESTS PASSED!" << std::endl;
 }
