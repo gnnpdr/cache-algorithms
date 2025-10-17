@@ -2,7 +2,6 @@
 
 #include "LFU.hpp"
 
-
 template<typename CacheType>
 CacheType cache_ctor()
 {
@@ -28,7 +27,7 @@ void print_cache(CacheType& cache)
 {
     auto cache_set = cache.get_cache_set();
     for (const auto& element : cache_set)
-        std::cout << element.key << " " ;
+        std::cout << element.key << " ";
     
     std::cout << std::endl;
 }

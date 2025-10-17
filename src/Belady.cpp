@@ -20,9 +20,6 @@ size_t BeladyCache::cache_push(int key)
     }
     cells_table[key] = new_cell_it;
 
-    //print_cache();
-    //std::cout << std::endl;
-
     return total_match_cnt;
 } 
 
