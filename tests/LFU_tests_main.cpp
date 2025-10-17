@@ -1,4 +1,3 @@
-#include "../include/LFU.hpp"
 #include "include/tests.hpp"
 
 int main()

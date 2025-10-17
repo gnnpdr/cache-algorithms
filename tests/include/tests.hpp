@@ -79,7 +79,7 @@ public:
 template<typename CacheType>
 void TestRunner<CacheType>::run_tests()
 {
-    const auto& tests = TestDataSelector<CacheType>::getTests();
+    const auto& tests = TestDataSelector<CacheType>::get_tests_data();
     for (const TestData& test : tests)
         single_test(test);
 
@@ -91,6 +91,10 @@ void TestRunner<CacheType>::single_test(TestData test)
 {
     total_test_amt++;
 
+    size_t cap = test.capacity;
+    size_t el_amt = test.el_amt;
+    size_t match_amt = test.match_amt;
+    std::vector<int> reqs = test.reqs;
     auto cache = CacheType(cap, el_amt, reqs);
 
     size_t matches = run_cache(cache);
@@ -100,7 +104,7 @@ void TestRunner<CacheType>::single_test(TestData test)
     else
     {
         passed_test_amt++;
-        std::cout << "test " << total_test_amt << " is good" << std::endl;
+        //std::cout << "test " << total_test_amt << " is good" << std::endl;
     }
 }
 

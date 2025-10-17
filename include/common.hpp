@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Belady.hpp"
 #include "LFU.hpp"
 
 
@@ -38,7 +37,7 @@ template<typename CacheType>
 size_t run_cache(CacheType& cache)
 {
     size_t el_amt = cache.get_el_amt();
-    auto reqs = cache.get_reqs();
+    auto reqs = cache.get_requests();
 
     size_t matches = 0;
     for (int i = 0; i < el_amt; i++)
@@ -46,4 +45,6 @@ size_t run_cache(CacheType& cache)
         int k = reqs[i];
         matches = cache.cache_push(k);
     }
+
+    return matches;
 }

@@ -1,4 +1,3 @@
-#include "../include/Belady.hpp"
 #include "include/tests.hpp"
 
 int main()

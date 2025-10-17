@@ -1,11 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <set>
-#include <unordered_map>
-#include <vector>
+#include "Belady.hpp"
 
-const size_t MAX_CACHE_SIZE = 200;
 const size_t START_MATCH_VAL = 1;
 
 class LFUCache
@@ -27,7 +23,7 @@ private:
     std::vector<int> requests;
     std::set<CacheCell> cache_set;
     std::unordered_map<int, std::set<CacheCell>::iterator> cells_table; 
-    
+
     size_t capacity = 0;
     size_t el_amt = 0;
     size_t total_match_cnt = 0;
