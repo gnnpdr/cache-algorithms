@@ -7,18 +7,46 @@ size_t BeladyCache::cache_push(int key)
 {
     cur_pos++;
     the_cell new_cell_it;
+    //printf("hello %d\n", key);
         
     auto it = cells_table.find(key);
     if (it == cells_table.end())
     {
+        //printf("miss\n");
+        if (find_next_pos(key, cur_pos + 1) == MAX_CACHE_SIZE)
+        {
+            //printf("lose\n");
+//
+            //for (const auto& element : cache_set)
+            //std::cout << element.key << " ";
+    //
+            //std::cout << std::endl;
+            return total_match_cnt;
+        }
+        if (cache_set.begin()->next_pos && cache_set.size() >= capacity && find_next_pos(key, cur_pos + 1) > cache_set.begin()->next_pos)
+        {
+            //printf("more\n");
+            //for (const auto& element : cache_set)
+            //std::cout << element.key << " ";
+    //
+            //std::cout << std::endl;
+            return total_match_cnt;
+        } 
+
         new_cell_it = list_push(key);
     }
     else
     {
+        //printf("match\n");  
         total_match_cnt++;
         new_cell_it = list_move(key);
     }
     cells_table[key] = new_cell_it;
+
+    //for (const auto& element : cache_set)
+    //    std::cout << element.key << " ";
+    //
+    //std::cout << std::endl;
 
     return total_match_cnt;
 } 
@@ -42,8 +70,6 @@ the_cell BeladyCache::list_push(int key)
         del_page();
 
     CacheCell new_cell{key, find_next_pos(key, cur_pos + 1)};
-    if (find_next_pos(key, cur_pos + 1) == MAX_CACHE_SIZE)
-        new_cell.next_pos = MAX_CACHE_SIZE;
 
     return cache_set.insert(new_cell).first;
 }
