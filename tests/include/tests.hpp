@@ -2,14 +2,14 @@
 
 #include "../include/common.hpp"
 
-const char* BIG_TEST_FILE_NAME = "include/big_test.dat";
+const char* BIG_TEST_FILE_NAME = "tests/include/big_test.dat";
 
 struct TestData
 {
     size_t capacity;
-    size_t el_amt;
+    size_t reqs_amt;
     std::vector<int> reqs;
-    size_t match_amt;
+    size_t hits_amt;
 };
 
 namespace TestDataStorage
@@ -87,7 +87,6 @@ struct TestDataSelector<EfBeladyCache>
 template<typename CacheType>
 class TestRunner
 {
-private:
     size_t total_test_amt = 0;
     size_t passed_test_amt = 0;
     const std::vector<TestData>& tests = TestDataSelector<CacheType>::get_tests_data();
@@ -98,7 +97,7 @@ public:
     void run_tests();
     void run_single_test(TestData test);
     void run_big_test();
-    void print_results();
+    void print_tests_result();
 };
 
 template<typename CacheType>
@@ -108,7 +107,7 @@ void TestRunner<CacheType>::run_tests()
     for (const TestData& test : tests)
         run_single_test(test);
 
-    print_results();
+    print_tests_result();
 }
 
 template<typename CacheType>
@@ -117,21 +116,21 @@ void TestRunner<CacheType>::run_single_test(TestData test)
     total_test_amt++;
 
     size_t cap = test.capacity;
-    size_t el_amt = test.el_amt;
-    size_t match_amt = test.match_amt;
+    size_t reqs_amt = test.reqs_amt;
+    size_t hits_amt = test.hits_amt;
     std::vector<int> reqs = test.reqs;
-    auto cache = CacheType(cap, el_amt, reqs);
+    auto cache = CacheType(cap, reqs_amt, reqs);
 
-    size_t matches = run_cache(cache);
+    size_t hits = run_cache(cache);
 
-    if (matches != test.match_amt)
-        std::cout << "test " << total_test_amt << " failed. " << "Expected " << test.match_amt << " Received " << matches << std::endl;
+    if (hits != test.hits_amt)
+        std::cout << "Test " << total_test_amt << " failed. " << "Expected " << test.hits_amt << " Received " << hits << std::endl;
     else
         passed_test_amt++;
 }
 
 template<typename CacheType>
-void TestRunner<CacheType>::print_results()
+void TestRunner<CacheType>::print_tests_result()
 {
     if (total_test_amt != passed_test_amt)
     {
@@ -144,27 +143,13 @@ void TestRunner<CacheType>::print_results()
 template<typename CacheType>
 void TestRunner<CacheType>::run_big_test()
 {   
-    printf("hello\n");
-    std::ifstream in(BIG_TEST_FILE_NAME);
-    int cap = 0;        //чтение из файла только для базовых типов как инт, значит, особо нет смысла задавать их как сайз т
-    in >> cap;
-    printf("%d\n", cap);
+    std::ifstream file_input(BIG_TEST_FILE_NAME);
+    auto cache = cache_ctor<CacheType>(file_input);
 
-    int reqs_amt = 0;
-    in >> reqs_amt;
-    
-    std::vector<int> reqs;
-    for (size_t k = 0; k < reqs_amt; k++)
-    {
-        int req = 0;
-        in >> req;
-        reqs.push_back(req);
-    }
-    
-    auto cache = CacheType(cap, reqs_amt, reqs);
+    size_t hits = run_cache(cache);
+    size_t reqs_amt = cache.get_reqs_amt();
+    size_t hit_rate = std::round((float)hits / (float)reqs_amt * 100);
 
-    size_t matches = run_cache(cache);
-    double hit_rate = (double)matches / (double)reqs_amt;
-
-    std::cout << "Hits: " << matches << ", Hit rate: " << hit_rate  << std::endl;
+    std::cout << "Hits: " << hits << std::endl;
+    std::cout << "Hit rate: " << hit_rate << "%" << std::endl;
 }

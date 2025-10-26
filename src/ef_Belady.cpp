@@ -1,6 +1,6 @@
 #include "../include/ef_Belady.hpp"
 
-EfBeladyCache::EfBeladyCache(size_t capacity, size_t el_amt, std::vector<int> requests) : capacity(capacity), el_amt(el_amt), requests(requests) {}
+EfBeladyCache::EfBeladyCache(size_t capacity, size_t reqs_amt, std::vector<int> requests) : capacity(capacity), reqs_amt(reqs_amt), requests(requests) {}
 using the_cell = std::set<EfBeladyCache::CacheCell>::iterator;
 
 size_t EfBeladyCache::cache_push(int key)

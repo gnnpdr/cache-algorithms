@@ -3,47 +3,37 @@
 #include "LFU.hpp"
 
 template<typename CacheType>
-CacheType cache_ctor()
+CacheType cache_ctor(std::istream& input = std::cin)
 {
     size_t cap = 0;
-    std::cin >> cap;
+    input >> cap;
 
-    size_t el_amt = 0;
-    std::cin >> el_amt;
+    size_t reqs_amt = 0;
+    input >> reqs_amt;
 
     std::vector<int> reqs;
-    for (size_t i = 0; i < el_amt; i++)
+    for (size_t req = 0; req < reqs_amt; req++)
     {
-        int k = 0;
-        std::cin >> k;
-        reqs.push_back(k);
+        int el = 0;
+        input >> el;
+        reqs.push_back(el);
     }
 
-    return CacheType(cap, el_amt, reqs);
-}
-
-template<typename CacheType>
-void print_cache(CacheType& cache)
-{
-    auto cache_set = cache.get_cache_set();
-    for (const auto& element : cache_set)
-        std::cout << element.key << " ";
-    
-    std::cout << std::endl;
+    return CacheType(cap, reqs_amt, reqs);
 }
 
 template<typename CacheType>
 size_t run_cache(CacheType& cache)
 {
-    size_t el_amt = cache.get_el_amt();
+    size_t reqs_amt = cache.get_reqs_amt();
     auto reqs = cache.get_requests();
 
-    size_t matches = 0;
-    for (size_t i = 0; i < el_amt; i++)
+    size_t hits = 0;
+    for (size_t req = 0; req < reqs_amt; req++)
     {
-        int k = reqs[i];
-        matches = cache.cache_push(k);
+        int el = reqs[req];
+        hits = cache.cache_push(el);
     }
 
-    return matches;
+    return hits;
 }

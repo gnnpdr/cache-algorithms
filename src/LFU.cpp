@@ -1,6 +1,6 @@
 #include "../include/LFU.hpp"
 
-LFUCache::LFUCache(size_t capacity, size_t el_amt, std::vector<int> requests) : capacity(capacity), el_amt(el_amt), requests(requests) {}
+LFUCache::LFUCache(size_t capacity, size_t reqs_amt, std::vector<int> requests) : capacity(capacity), reqs_amt(reqs_amt), requests(requests) {}
 using the_cell = std::set<LFUCache::CacheCell>::iterator;
 
 size_t LFUCache::cache_push(int key)

@@ -6,6 +6,7 @@
 #include <vector>
 #include <limits>
 #include <fstream>
+#include <cmath>
 
 const size_t MAX_CACHE_SIZE = std::numeric_limits<size_t>::max();
 
@@ -28,15 +29,14 @@ private:
     size_t capacity = 0;
     size_t cur_pos = 0;
     size_t total_match_cnt = 0;
-    size_t el_amt = 0;
-    size_t max_pos = 0;
+    size_t reqs_amt = 0;
 
     std::vector<int> requests;
     std::set<CacheCell> cache_set;
     std::unordered_map<int, std::set<CacheCell>::iterator> cells_table; 
 
 public:
-    BeladyCache(size_t capacity, size_t el_amt, std::vector<int> requests);
+    BeladyCache(size_t capacity, size_t reqs_amt, std::vector<int> requests);
 
     size_t cache_push(int key);
     the_cell list_move(int key);
@@ -44,7 +44,7 @@ public:
     void del_page();
     size_t find_next_pos(int key, size_t cur_pos);
 
-    size_t get_el_amt() const {return el_amt;}
+    size_t get_reqs_amt() const {return reqs_amt;}
     const std::vector<int>& get_requests() const {return requests;}
     const std::set<CacheCell>& get_cache_set() const {return cache_set;}
 };

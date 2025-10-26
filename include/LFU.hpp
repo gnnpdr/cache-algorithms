@@ -10,7 +10,7 @@ public:
     struct CacheCell
     {
         int key;
-        int match_cnt;
+        size_t match_cnt;
 
         bool operator<(const CacheCell& other) const
         {
@@ -25,18 +25,18 @@ private:
     std::unordered_map<int, std::set<CacheCell>::iterator> cells_table; 
 
     size_t capacity = 0;
-    size_t el_amt = 0;
+    size_t reqs_amt = 0;
     size_t total_match_cnt = 0;
 
 public:
-    LFUCache(size_t capacity, size_t el_amt, std::vector<int> requests);
+    LFUCache(size_t capacity, size_t reqs_amt, std::vector<int> requests);
 
     size_t cache_push(int key);
     the_cell list_move(int key);
     the_cell list_push(int key);
     void del_page();
 
-    size_t get_el_amt() const {return el_amt;}
+    size_t get_reqs_amt() const {return reqs_amt;}
     const std::vector<int>& get_requests() const {return requests;}
     const std::set<CacheCell>& get_cache_set() const {return cache_set;}
 };
