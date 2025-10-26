@@ -1,15 +1,8 @@
 #pragma once
 
-#include <iostream>
-#include <set>
-#include <unordered_map>
-#include <vector>
-#include <limits>
-#include <fstream>
+#include "Belady.hpp"
 
-const size_t MAX_CACHE_SIZE = std::numeric_limits<size_t>::max();
-
-class BeladyCache
+class EfBeladyCache
 {
 public:
     struct CacheCell
@@ -29,14 +22,13 @@ private:
     size_t cur_pos = 0;
     size_t total_match_cnt = 0;
     size_t el_amt = 0;
-    size_t max_pos = 0;
 
     std::vector<int> requests;
     std::set<CacheCell> cache_set;
     std::unordered_map<int, std::set<CacheCell>::iterator> cells_table; 
 
 public:
-    BeladyCache(size_t capacity, size_t el_amt, std::vector<int> requests);
+    EfBeladyCache(size_t capacity, size_t el_amt, std::vector<int> requests);
 
     size_t cache_push(int key);
     the_cell list_move(int key);
