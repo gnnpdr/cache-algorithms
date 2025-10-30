@@ -32,21 +32,16 @@ size_t run_cache(CacheType& cache)
     for (size_t req = 0; req < reqs_amt; req++)
     {
         int el = reqs[req];
-        //printf("key %d\n", el);
         hits = cache.cache_push(el);
-
-        //------------------------------------
-        //std::cout << "\nCACHE" << std::endl;
-        //auto cache_set = cache.get_cache_set();
-        //for (const auto& element : cache_set)
-        //    std::cout << element.key << " ";
-        //
-        //std::cout << "\n-------------------\n" << std::endl;
-//
-        //int a = 0;
-        //scanf("%d", &a);
-        //-----------------------------------
     }
 
     return hits;
+}
+
+void print_hits_result(size_t hits, size_t reqs_amt)
+{
+    std::cout << "Hits: " << hits << std::endl;
+
+    size_t hit_rate = std::round((float)hits / (float)reqs_amt * 100);
+    std::cout << "Hit rate: " << hit_rate << "%" << std::endl;
 }

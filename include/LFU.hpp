@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ef_Belady.hpp"
+#include "Belady.hpp"
 
 const size_t START_MATCH_VAL = 1;
 
