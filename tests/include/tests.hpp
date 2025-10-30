@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../include/common.hpp"
+#include <chrono>
+
 
 const char* BIG_TEST_FILE_NAME = "tests/include/big_test.dat";
 
@@ -143,10 +145,28 @@ void TestRunner<CacheType>::print_tests_result()
 template<typename CacheType>
 void TestRunner<CacheType>::run_big_test()
 {   
+    auto start = std::chrono::high_resolution_clock::now();
+
+
     std::ifstream file_input(BIG_TEST_FILE_NAME);
+    
     auto cache = cache_ctor<CacheType>(file_input);
 
+    auto end = std::chrono::high_resolution_clock::now();
+    
+    std::chrono::duration<double> time_taken = end - start;
+    std::cout << "input time: " << time_taken.count() << " seconds" << std::endl;
+
+
+    start = std::chrono::high_resolution_clock::now();
+
     size_t hits = run_cache(cache);
+
+    end = std::chrono::high_resolution_clock::now();
+    
+    time_taken = end - start;
+    std::cout << "caching time: " << time_taken.count() << " seconds" << std::endl;
+
     size_t reqs_amt = cache.get_reqs_amt();
     size_t hit_rate = std::round((float)hits / (float)reqs_amt * 100);
 
