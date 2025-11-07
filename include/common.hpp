@@ -1,6 +1,7 @@
 #pragma once
 
-#include "LFU.hpp"
+//#include "LFU.hpp"
+#include "B.hpp"
 
 template<typename CacheType>
 CacheType cache_ctor(std::istream& input = std::cin)
@@ -19,20 +20,50 @@ CacheType cache_ctor(std::istream& input = std::cin)
         reqs.push_back(el);
     }
 
-    return CacheType(cap, reqs_amt, reqs);
+    return CacheType(cap,  reqs);
 }
+//
+//template<typename CacheType>
+//size_t run_cache(CacheType& cache)
+//{
+//    size_t reqs_amt = cache.get_reqs_amt();
+//    auto reqs = cache.get_requests();
+//
+//    size_t hits = 0;
+//    for (size_t req = 0; req < reqs_amt; req++)
+//    {
+//        int el = reqs[req];
+//        bool is_hit = cache.cache_push(el);
+//        if (is_hit)
+//            hits++;
+//    }
+//
+//    return hits;
+//}
 
 template<typename CacheType>
 size_t run_cache(CacheType& cache)
 {
-    size_t reqs_amt = cache.get_reqs_amt();
     auto reqs = cache.get_requests();
+    size_t reqs_amt = reqs.size();
 
     size_t hits = 0;
     for (size_t req = 0; req < reqs_amt; req++)
     {
-        int el = reqs[req];
-        hits = cache.cache_push(el);
+        int key = reqs[req];
+        
+        bool is_hit = cache.lookup_update(key, slow_get_page_int);
+
+        //auto cache_set = cache.get_cache();
+        //for (const auto& element : cache_set)
+        //{
+        //    std::cout << "k " << element.key << " v " << element.val << " np" << element.next_pos << " / ";
+        //}
+//
+        //std::cout << std::endl;
+        
+        if (is_hit)
+            hits++;
     }
 
     return hits;

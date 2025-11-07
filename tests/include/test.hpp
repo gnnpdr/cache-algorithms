@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 
 #include "../include/common.hpp"
 #include <chrono>
@@ -27,38 +27,19 @@ namespace TestDataStorage
                             {3, 18, {1 ,2 ,3 ,1 ,4 ,2 ,5 ,3 ,6 ,1 ,7 ,2 ,8 ,3 ,9 ,1 ,10 ,2}, 8},
                             {4, 20, {1 ,2 ,3 ,1 ,4 ,2 ,5 ,3 ,6 ,1 ,7 ,4 ,8 ,2 ,9 ,5 ,10 ,3 ,11 ,1}, 8},
                             {4, 12, {1 ,2 ,3 ,4 ,1, 2, 5, 1, 2, 4, 3, 4}, 7}};
-
-    static std::vector<TestData> LFU_tests = {
-                            {3, 15, {1 ,2 ,3 ,4 ,1 ,2 ,5 ,3 ,1 ,6 ,4 ,2 ,7 ,3 ,8}, 4},
-                            {4, 17, {1 ,2 ,3 ,4 ,5 ,1 ,2 ,6 ,3 ,7 ,4 ,8 ,5 ,9 ,1 ,10 ,2}, 5},
-                            {3, 15, {1 ,2 ,3 ,2 ,1 ,4 ,3 ,5 ,1 ,2 ,6 ,4 ,7 ,3 ,8}, 4},
-                            {5, 18, {1 ,2 ,3 ,4 ,5 ,6 ,7 ,1 ,8 ,2 ,9 ,3 ,10 ,4 ,11 ,5 ,12 ,6}, 4},
-                            {3, 18, {1 ,2 ,1 ,3 ,1 ,4 ,1 ,5 ,1 ,6 ,1 ,7 ,1 ,8 ,1 ,9 ,1 ,10}, 8},
-                            {4, 18, {1 ,2 ,3 ,4 ,1 ,2 ,5 ,6 ,3 ,4 ,7 ,8 ,1 ,2 ,9 ,10 ,3 ,4}, 6},
-                            {3, 17, {1 ,2 ,3 ,4 ,3 ,2 ,5 ,1 ,6 ,4 ,7 ,2 ,8 ,3 ,9 ,1 ,10}, 4},
-                            {5, 18, {1 ,2 ,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10 ,1 ,2 ,3 ,4 ,5 ,11 ,12 ,13}, 4},
-                            {3, 18, {1 ,2 ,3 ,1 ,4 ,2 ,5 ,3 ,6 ,1 ,7 ,2 ,8 ,3 ,9 ,1 ,10 ,2}, 6},
-                            {4, 20, {1 ,2 ,3 ,1 ,4 ,2 ,5 ,3 ,6 ,1 ,7 ,4 ,8 ,2 ,9 ,5 ,10 ,3 ,11 ,1}, 7}};
 }
 
 template<typename CacheType>
 struct TestDataSelector;
 
+using BeladyCacheInt = BeladyCache<int, int>;
+
 template<>
-struct TestDataSelector<BeladyCache> 
+struct TestDataSelector<BeladyCacheInt> 
 {
     static const std::vector<TestData>& get_tests_data() 
     {
         return TestDataStorage::Belady_tests;
-    }
-};
-
-template<>
-struct TestDataSelector<LFUCache> 
-{
-    static const std::vector<TestData>& get_tests_data() 
-    {
-        return TestDataStorage::LFU_tests;
     }
 };
 
@@ -95,7 +76,7 @@ void TestRunner<CacheType>::run_single_test(TestData test)
     size_t reqs_amt = test.reqs_amt;
     size_t hits_amt = test.hits_amt;
     std::vector<int> reqs = test.reqs;
-    auto cache = CacheType(cap, reqs_amt, reqs);
+    auto cache = CacheType(cap, reqs);
 
     size_t hits = run_cache(cache);
 
@@ -132,4 +113,4 @@ void TestRunner<CacheType>::run_big_test()
 
     size_t reqs_amt = cache.get_reqs_amt();
     print_hits_result(hits, reqs_amt);
-}*/
+}
