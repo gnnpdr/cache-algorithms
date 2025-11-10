@@ -1,20 +1,12 @@
 #pragma once
 
 #include "../include/common.hpp"
+#include "tests_common.hpp"
 #include <chrono>
-#include <variant>
 #include <functional>
 
-const char* BIG_TEST_FILE_NAME = "tests/include/big_test.dat";
+//---------------------------------------------------------------------------------------------------
 
-template<typename KeyT>
-struct TestData
-{
-    size_t capacity;
-    size_t reqs_amt;
-    std::vector<KeyT> reqs;
-    size_t hits_amt;
-};
 
 namespace TestDataStorage
 {
@@ -38,32 +30,13 @@ namespace TestDataStorage
 
     static std::vector<TestData<std::string>> Belady_tests_string = {
                             {3, 7, {"home", "about", "home", "contact", "about", "products", "home"}, 3}};
-    
 }
 
-template<typename CacheType>
-struct TestDataSelector;
+template<typename KeyT>
+struct BeladyTestDataSelector;
 
-template<typename CacheType>
-class TestRunner
-{
-    size_t total_test_amt = 0;
-    size_t passed_test_amt = 0;
-    using KeyT = typename CacheType::key_type; 
-    const std::vector<TestData<KeyT>>& tests;
-public:
-
-    TestRunner() : tests(TestDataSelector<CacheType>::get_tests_data()) {}
-    void run_tests();
-    void run_single_test(TestData<KeyT> test);
-    void run_big_test();
-    void print_tests_result();
-};
-
-
-
-template<typename ValT>
-struct TestDataSelector<BeladyCache<int, ValT>> 
+template<>
+struct BeladyTestDataSelector<int> 
 {
     static const std::vector<TestData<int>>& get_tests_data() 
     {
@@ -71,8 +44,8 @@ struct TestDataSelector<BeladyCache<int, ValT>>
     }
 };
 
-template<typename ValT>
-struct TestDataSelector<BeladyCache<double, ValT>> 
+template<>
+struct BeladyTestDataSelector<double> 
 {
     static const std::vector<TestData<double>>& get_tests_data() 
     {
@@ -80,8 +53,8 @@ struct TestDataSelector<BeladyCache<double, ValT>>
     }
 };
 
-template<typename ValT>
-struct TestDataSelector<BeladyCache<std::string, ValT>> 
+template<>
+struct BeladyTestDataSelector<std::string> 
 {
     static const std::vector<TestData<std::string>>& get_tests_data() 
     {
@@ -89,19 +62,39 @@ struct TestDataSelector<BeladyCache<std::string, ValT>>
     }
 };
 
-template<typename CacheType>
-void TestRunner<CacheType>::run_tests()
+
+
+template<typename KeyT, typename ValT = int>
+class BeladyTestRunner
 {
-    const auto& tests = TestDataSelector<CacheType>::get_tests_data();
-    using KeyT = typename CacheType::key_type; 
+    size_t total_test_amt = 0;
+    size_t passed_test_amt = 0;
+    const std::vector<TestData<KeyT>>& tests;
+public:
+
+    BeladyTestRunner() : tests(BeladyTestDataSelector<KeyT>::get_tests_data()) {}
+
+    void run_tests();
+    void run_single_test(TestData<KeyT> test);
+    void run_big_test();
+    void print_tests_result();
+};
+
+//-----------------------------------------------------------------------------------------------
+
+
+template<typename KeyT, typename ValT>
+void BeladyTestRunner<KeyT, ValT>::run_tests()
+{
+    const auto& tests = BeladyTestDataSelector<KeyT>::get_tests_data();
     for (const TestData<KeyT>& test : tests)
         run_single_test(test);
 
     print_tests_result();
 }
 
-template<typename CacheType>
-void TestRunner<CacheType>::run_single_test(TestData<KeyT> test)
+template<typename KeyT, typename ValT>
+void BeladyTestRunner<KeyT, ValT>::run_single_test(TestData<KeyT> test)
 {
     total_test_amt++;
 
@@ -109,9 +102,9 @@ void TestRunner<CacheType>::run_single_test(TestData<KeyT> test)
     size_t reqs_amt = test.reqs_amt;
     size_t hits_amt = test.hits_amt;
     std::vector<KeyT> reqs = test.reqs;
-    auto cache = CacheType(cap, reqs);
+    auto cache = BeladyCache<KeyT, ValT>(cap, reqs);
 
-    size_t hits = run_cache(cache);
+    size_t hits = run_Belady_cache(cache);
 
     if (hits != test.hits_amt)
         std::cout << "Test " << total_test_amt << " failed. " << "Expected " << test.hits_amt << " Received " << hits << std::endl;
@@ -119,8 +112,8 @@ void TestRunner<CacheType>::run_single_test(TestData<KeyT> test)
         passed_test_amt++;
 }
 
-template<typename CacheType>
-void TestRunner<CacheType>::print_tests_result()
+template<typename KeyT, typename ValT>
+void BeladyTestRunner<KeyT, ValT>::print_tests_result()
 {
     if (total_test_amt != passed_test_amt)
         std::cout << passed_test_amt << " out of " << total_test_amt << " tests passed" << std::endl;
@@ -128,22 +121,23 @@ void TestRunner<CacheType>::print_tests_result()
         std::cout << "all tests passed!" << std::endl;
 }
 
-template<typename CacheType>
-void TestRunner<CacheType>::run_big_test()
+template<typename KeyT, typename ValT>
+void BeladyTestRunner<KeyT, ValT>::run_big_test()
 {   
     std::ifstream file_input(BIG_TEST_FILE_NAME);
     
-    auto cache = cache_ctor<CacheType>(file_input);
+    auto cache = Belady_cache_ctor<KeyT, ValT>(file_input);
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    size_t hits = run_cache(cache);
+    size_t hits = run_Belady_cache<KeyT, ValT>(cache);
 
     auto end = std::chrono::high_resolution_clock::now();
     
     std::chrono::duration<double> time_taken = end - start;
     std::cout << "caching time: " << time_taken.count() << " seconds" << std::endl;
 
-    size_t reqs_amt = cache.get_reqs_amt();
+    auto reqs = cache.get_requests();
+    size_t reqs_amt = reqs.size();
     print_hits_result(hits, reqs_amt);
 }

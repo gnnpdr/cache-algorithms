@@ -33,15 +33,14 @@ public:
     using the_cell = typename std::set<CacheCell>::iterator;
 
 private:
-    
     std::vector<KeyT> requests_;
     std::set<CacheCell> cache_;
     std::unordered_map<KeyT, the_cell> hash_;
 
     std::unordered_map<KeyT, size_t> next_pos_ind_;
     std::unordered_map<KeyT, std::vector<size_t>> key_positions_;
-public:
 
+public:
     BeladyCache(size_t capacity, const std::vector<KeyT>& requests) : capacity_(capacity), requests_(requests) 
     {
         fill_key_positions();
@@ -80,7 +79,7 @@ public:
 
     const std::vector<KeyT>& get_requests() const {return requests_;}
     const std::set<CacheCell>& get_cache() const {return cache_;}
-
+    
 private:
     void update_cache_cell(KeyT key)
     {

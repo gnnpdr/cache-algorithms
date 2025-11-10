@@ -42,3 +42,9 @@ target_include_directories(tests_lib INTERFACE ${TESTS_DIR}/${INCLUDE_DIR})
 
 add_executable(B_test ${TESTS_DIR}/${MAIN_DIR}/B_test_main.cpp)
 target_link_libraries(B_test PRIVATE common_lib tests_lib)
+
+add_executable(L_test ${TESTS_DIR}/${MAIN_DIR}/L_test_main.cpp)
+target_link_libraries(L_test PRIVATE common_lib tests_lib)
+
+add_executable(ef_test ${TESTS_DIR}/${MAIN_DIR}/efficiency_test_main.cpp)
+target_link_libraries(ef_test PRIVATE common_lib tests_lib)
