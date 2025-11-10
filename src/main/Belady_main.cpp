@@ -1,4 +1,4 @@
-#include "../include/common.hpp"
+/*#include "../include/common.hpp"
 
 int main()
 {
@@ -10,4 +10,4 @@ int main()
     print_hits_result(hits, reqs_amt);
 
     return 0;
-}
+}*/

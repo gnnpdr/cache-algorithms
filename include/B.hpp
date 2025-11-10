@@ -17,6 +17,8 @@ class BeladyCache
     size_t cur_pos_ = 0;
 
 public:
+    using key_type = KeyT;
+
     struct CacheCell
     {
         KeyT key;
@@ -80,7 +82,7 @@ public:
     const std::set<CacheCell>& get_cache() const {return cache_;}
 
 private:
-    void update_cache_cell(int key)
+    void update_cache_cell(KeyT key)
     {
         auto it = hash_.find(key);
         CacheCell the_cell = *it->second;
@@ -133,12 +135,4 @@ private:
             next_pos_ind_.insert({requests_[pos], 0});
         }
     }
-
-    
 };
-
-
-int slow_get_page_int(int key)
-{
-    return key * 10;
-}

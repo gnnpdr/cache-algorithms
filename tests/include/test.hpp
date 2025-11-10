@@ -2,20 +2,23 @@
 
 #include "../include/common.hpp"
 #include <chrono>
+#include <variant>
+#include <functional>
 
 const char* BIG_TEST_FILE_NAME = "tests/include/big_test.dat";
 
+template<typename KeyT>
 struct TestData
 {
     size_t capacity;
     size_t reqs_amt;
-    std::vector<int> reqs;
+    std::vector<KeyT> reqs;
     size_t hits_amt;
 };
 
 namespace TestDataStorage
 {
-    static std::vector<TestData> Belady_tests = {
+    static std::vector<TestData<int>> Belady_tests_int = {
                             {3, 15, {1 ,2 ,3 ,4 ,1 ,2 ,5 ,3 ,1 ,6 ,4 ,2 ,7 ,3 ,8}, 6},
                             {4, 17, {1 ,2 ,3 ,4 ,5 ,1 ,2 ,6 ,3 ,7 ,4 ,8 ,5 ,9 ,1 ,10 ,2}, 6},
                             {3, 15, {1 ,2 ,3 ,2 ,1 ,4 ,3 ,5 ,1 ,2 ,6 ,4 ,7 ,3 ,8}, 6},
@@ -27,55 +30,85 @@ namespace TestDataStorage
                             {3, 18, {1 ,2 ,3 ,1 ,4 ,2 ,5 ,3 ,6 ,1 ,7 ,2 ,8 ,3 ,9 ,1 ,10 ,2}, 8},
                             {4, 20, {1 ,2 ,3 ,1 ,4 ,2 ,5 ,3 ,6 ,1 ,7 ,4 ,8 ,2 ,9 ,5 ,10 ,3 ,11 ,1}, 8},
                             {4, 12, {1 ,2 ,3 ,4 ,1, 2, 5, 1, 2, 4, 3, 4}, 7}};
+
+    static std::vector<TestData<double>> Belady_tests_double = {
+                            {3, 8, {1.5, 2.7, 1.5, 3.14, 2.7, 4.2, 1.5, 3.14}, 4},
+                            {2, 7, {-1.5, 0.0, 2.5, -1.5, 0.0, 3.7, -2.1}, 2},
+                            {2, 6, {1.0000001, 1.0000002, 1.0000001, 2.5, 1.0000002, 3.0}, 2}};
+
+    static std::vector<TestData<std::string>> Belady_tests_string = {
+                            {3, 7, {"home", "about", "home", "contact", "about", "products", "home"}, 3}};
+    
 }
 
 template<typename CacheType>
 struct TestDataSelector;
-
-using BeladyCacheInt = BeladyCache<int, int>;
-
-template<>
-struct TestDataSelector<BeladyCacheInt> 
-{
-    static const std::vector<TestData>& get_tests_data() 
-    {
-        return TestDataStorage::Belady_tests;
-    }
-};
 
 template<typename CacheType>
 class TestRunner
 {
     size_t total_test_amt = 0;
     size_t passed_test_amt = 0;
-    const std::vector<TestData>& tests = TestDataSelector<CacheType>::get_tests_data();
+    using KeyT = typename CacheType::key_type; 
+    const std::vector<TestData<KeyT>>& tests;
 public:
 
+    TestRunner() : tests(TestDataSelector<CacheType>::get_tests_data()) {}
     void run_tests();
-    void run_single_test(TestData test);
+    void run_single_test(TestData<KeyT> test);
     void run_big_test();
     void print_tests_result();
+};
+
+
+
+template<typename ValT>
+struct TestDataSelector<BeladyCache<int, ValT>> 
+{
+    static const std::vector<TestData<int>>& get_tests_data() 
+    {
+        return TestDataStorage::Belady_tests_int;
+    }
+};
+
+template<typename ValT>
+struct TestDataSelector<BeladyCache<double, ValT>> 
+{
+    static const std::vector<TestData<double>>& get_tests_data() 
+    {
+        return TestDataStorage::Belady_tests_double;
+    }
+};
+
+template<typename ValT>
+struct TestDataSelector<BeladyCache<std::string, ValT>> 
+{
+    static const std::vector<TestData<std::string>>& get_tests_data() 
+    {
+        return TestDataStorage::Belady_tests_string;
+    }
 };
 
 template<typename CacheType>
 void TestRunner<CacheType>::run_tests()
 {
     const auto& tests = TestDataSelector<CacheType>::get_tests_data();
-    for (const TestData& test : tests)
+    using KeyT = typename CacheType::key_type; 
+    for (const TestData<KeyT>& test : tests)
         run_single_test(test);
 
     print_tests_result();
 }
 
 template<typename CacheType>
-void TestRunner<CacheType>::run_single_test(TestData test)
+void TestRunner<CacheType>::run_single_test(TestData<KeyT> test)
 {
     total_test_amt++;
 
     size_t cap = test.capacity;
     size_t reqs_amt = test.reqs_amt;
     size_t hits_amt = test.hits_amt;
-    std::vector<int> reqs = test.reqs;
+    std::vector<KeyT> reqs = test.reqs;
     auto cache = CacheType(cap, reqs);
 
     size_t hits = run_cache(cache);
@@ -92,7 +125,7 @@ void TestRunner<CacheType>::print_tests_result()
     if (total_test_amt != passed_test_amt)
         std::cout << passed_test_amt << " out of " << total_test_amt << " tests passed" << std::endl;
     else
-        std::cout << "ALL TESTS PASSED!" << std::endl;
+        std::cout << "all tests passed!" << std::endl;
 }
 
 template<typename CacheType>
