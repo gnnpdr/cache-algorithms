@@ -5,8 +5,6 @@
 #include <unordered_map>
 #include <vector>
 #include <limits>
-#include <fstream>
-#include <cmath>
 
 const size_t MAX_CACHE_SIZE = std::numeric_limits<size_t>::max();
 
@@ -78,7 +76,6 @@ public:
     }
 
     const std::vector<KeyT>& get_requests() const {return requests_;}
-    const std::set<CacheCell>& get_cache() const {return cache_;}
     
 private:
     void update_cache_cell(KeyT key)
@@ -108,14 +105,26 @@ private:
 
     size_t find_next_pos(KeyT key)
     {
-        auto& pos_arr = key_positions_.find(key)->second;
+        auto pos_it = key_positions_.find(key);
+        auto ind_it = next_pos_ind_.find(key);
 
-        if (pos_arr[next_pos_ind_.find(key)->second] == cur_pos_ - 1 && next_pos_ind_.find(key)->second + 1 == pos_arr.size())
+        if (pos_it == key_positions_.end() || ind_it == next_pos_ind_.end()) 
             return MAX_CACHE_SIZE;
-        else if (pos_arr[next_pos_ind_.find(key)->second] == cur_pos_ - 1)
-            return pos_arr[next_pos_ind_.find(key)->second + 1];
-        else
-            return pos_arr[next_pos_ind_.find(key)->second];
+
+        auto& pos_arr = pos_it->second;
+        size_t current_index = ind_it->second;
+
+        if (current_index >= pos_arr.size()) 
+            return MAX_CACHE_SIZE;
+
+        if (pos_arr[current_index] == cur_pos_ - 1) 
+        {
+            current_index++;
+            if (current_index >= pos_arr.size()) 
+                return MAX_CACHE_SIZE;
+        }
+
+        return pos_arr[current_index];
     }
 
     void del_page()
@@ -125,7 +134,7 @@ private:
         cache_.erase(del_cell);
     }
 
-    void fill_key_positions() 
+    void fill_key_positions()
     {
         size_t reqs_size = requests_.size();
         for (size_t pos = 0; pos < reqs_size; pos++)

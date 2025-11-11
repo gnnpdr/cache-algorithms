@@ -1,4 +1,4 @@
-#include "../tests/include/LFU_tests.hpp"
+#include "../include/LFU_tests.hpp"
 
 int main()
 {
@@ -15,7 +15,6 @@ int main()
     std::cout << "string key test..." << std::endl;
     auto test_runner_string = LFUTestRunner<std::string, int>();
     test_runner_string.run_tests();
-    std::cout <<  std::endl;
     
     return 0;
 }

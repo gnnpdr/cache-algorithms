@@ -1,12 +1,6 @@
 #pragma once
 
-#include "../include/common.hpp"
 #include "tests_common.hpp"
-#include <chrono>
-#include <functional>
-
-//---------------------------------------------------------------------------------------------------
-
 
 namespace TestDataStorage
 {
@@ -62,8 +56,6 @@ struct BeladyTestDataSelector<std::string>
     }
 };
 
-
-
 template<typename KeyT, typename ValT = int>
 class BeladyTestRunner
 {
@@ -79,9 +71,6 @@ public:
     void run_big_test();
     void print_tests_result();
 };
-
-//-----------------------------------------------------------------------------------------------
-
 
 template<typename KeyT, typename ValT>
 void BeladyTestRunner<KeyT, ValT>::run_tests()
@@ -99,7 +88,6 @@ void BeladyTestRunner<KeyT, ValT>::run_single_test(TestData<KeyT> test)
     total_test_amt++;
 
     size_t cap = test.capacity;
-    size_t reqs_amt = test.reqs_amt;
     size_t hits_amt = test.hits_amt;
     std::vector<KeyT> reqs = test.reqs;
     auto cache = BeladyCache<KeyT, ValT>(cap, reqs);

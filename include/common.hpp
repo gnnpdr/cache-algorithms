@@ -1,27 +1,40 @@
 #pragma once
 
-#include "L.hpp"
-#include "B.hpp"
+#include "LFU.hpp"
 
 #include <type_traits>
+#include <cmath>
 #include <string>
+#include <fstream>
 
 template<typename KeyT>
-auto get_default_slow_get_page() {
-    if constexpr (std::is_same_v<KeyT, int>) {
-        return [](int key) -> int { 
+auto get_default_slow_get_page() 
+{
+    if constexpr (std::is_same_v<KeyT, int>) 
+    {
+        return [](int key) -> int 
+        { 
             return key * 10;
         };
-    } else if constexpr (std::is_same_v<KeyT, double>) {
-        return [](double key) -> int { 
+    } 
+    else if constexpr (std::is_same_v<KeyT, double>) 
+    {
+        return [](double key) -> int 
+        { 
             return static_cast<int>(key * 100);
         };
-    } else if constexpr (std::is_same_v<KeyT, std::string>) {
-        return [](const std::string& key) -> int { 
+    } 
+    else if constexpr (std::is_same_v<KeyT, std::string>) 
+    {
+        return [](const std::string& key) -> int 
+        { 
             return key.length();
         };
-    } else {
-        return [](KeyT key) -> int { 
+    } 
+    else 
+    {
+        return [](KeyT key) -> int 
+        { 
             return static_cast<int>(key);
         };
     }

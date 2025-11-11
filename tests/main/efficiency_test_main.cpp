@@ -1,5 +1,5 @@
-#include "../tests/include/Belady_tests.hpp"
-#include "../tests/include/LFU_tests.hpp"
+#include "../include/Belady_tests.hpp"
+#include "../include/LFU_tests.hpp"
 
 int main()
 {

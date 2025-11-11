@@ -25,13 +25,13 @@ cmake -B build -S . && cmake --build build -j4
 
 Hit rate: 31%
 
-Average execution time: 0,41 sec
+Average execution time: 0,46 sec
 
 **LFU:**
 
 Hit rate: 20%
 
-Average execution time: 0,26 sec
+Average execution time: 0,15 sec
 
 как и ожидалось, процент попаданий для неидеального кэша меньше, чем для идеального.
 

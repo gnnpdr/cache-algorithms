@@ -1,10 +1,6 @@
 #pragma once
 
-#include "../include/common.hpp"
 #include "tests_common.hpp"
-
-
-//---------------------------------------------------------------------------------------------------
 
 namespace TestDataStorage
 {
@@ -73,10 +69,6 @@ public:
     void run_big_test();
     void print_tests_result();
 };
-
-//-----------------------------------------------------------------------------------------------
-
-
 
 template<typename KeyT, typename ValT>
 void LFUTestRunner<KeyT, ValT>::run_tests()

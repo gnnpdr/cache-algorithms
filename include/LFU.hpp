@@ -1,6 +1,6 @@
 #pragma once
 
-#include "B.hpp"
+#include "Belady.hpp"
 
 const size_t START_MATCH_VAL = 1;
 
@@ -50,7 +50,7 @@ public:
         }
     }
 
-    const std::set<CacheCell>& get_cache() const {return cache_;}
+    //const std::set<CacheCell>& get_cache() const {return cache_;}
 
 private:
     void update_cache_cell(KeyT key)

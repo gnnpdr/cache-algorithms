@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../include/common.hpp"
 #include <chrono>
 #include <functional>
 
