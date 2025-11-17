@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../include/common.hpp"
+#include "common.hpp"
 #include <chrono>
 #include <functional>
 
-const char* BIG_TEST_FILE_NAME = "tests/include/big_test.dat";
+const char* BIG_TEST_FILE_NAME = "include/big_test.dat";
 
 template<typename KeyT>
 struct TestData

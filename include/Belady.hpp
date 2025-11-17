@@ -6,7 +6,12 @@
 #include <vector>
 #include <limits>
 
+namespace Belady
+{
+namespace consts
+{
 const size_t MAX_CACHE_SIZE = std::numeric_limits<size_t>::max();
+}
 
 template<typename KeyT = int, typename ValT = KeyT>
 class BeladyCache
@@ -23,9 +28,9 @@ public:
         ValT val;
         size_t next_pos;
 
-        bool operator<(const CacheCell& other) const
+        auto operator<=>(const CacheCell& other) const
         {
-            return next_pos >= other.next_pos;
+            return other.next_pos <=> next_pos;
         }
     };
     using the_cell = typename std::set<CacheCell>::iterator;
@@ -53,7 +58,7 @@ public:
         if (it == hash_.end())
         {
             size_t next_pos = find_next_pos(key);
-            if (next_pos == MAX_CACHE_SIZE)
+            if (next_pos == consts::MAX_CACHE_SIZE)
             {
                 next_pos_ind_[key]++;
                 return false;
@@ -109,19 +114,19 @@ private:
         auto ind_it = next_pos_ind_.find(key);
 
         if (pos_it == key_positions_.end() || ind_it == next_pos_ind_.end()) 
-            return MAX_CACHE_SIZE;
+            return consts::MAX_CACHE_SIZE;
 
         auto& pos_arr = pos_it->second;
         size_t current_index = ind_it->second;
 
         if (current_index >= pos_arr.size()) 
-            return MAX_CACHE_SIZE;
+            return consts::MAX_CACHE_SIZE;
 
         if (pos_arr[current_index] == cur_pos_ - 1) 
         {
             current_index++;
             if (current_index >= pos_arr.size()) 
-                return MAX_CACHE_SIZE;
+                return consts::MAX_CACHE_SIZE;
         }
 
         return pos_arr[current_index];
@@ -129,6 +134,9 @@ private:
 
     void del_page()
     {
+        if (cache_.empty())
+            return;
+
         auto del_cell = cache_.begin();
         hash_.erase(del_cell->key);
         cache_.erase(del_cell);
@@ -144,3 +152,5 @@ private:
         }
     }
 };
+
+}

@@ -1,4 +1,4 @@
-#include "../include/Belady_tests.hpp"
+#include "Belady_tests.hpp"
 
 int main()
 {

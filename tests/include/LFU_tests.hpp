@@ -89,7 +89,7 @@ void LFUTestRunner<KeyT, ValT>::run_single_test(TestData<KeyT> test)
     size_t reqs_amt = test.reqs_amt;
     size_t hits_amt = test.hits_amt;
     std::vector<KeyT> reqs = test.reqs;
-    auto cache_data = LFUCacheData<KeyT, ValT>{LFUCache<KeyT, ValT>(cap), reqs};
+    auto cache_data = LFUCacheData<KeyT, ValT>{LFU::LFUCache<KeyT, ValT>(cap), reqs};
 
     size_t hits = run_LFU_cache(cache_data);
 

@@ -1,4 +1,4 @@
-#include "../include/LFU_tests.hpp"
+#include "LFU_tests.hpp"
 
 int main()
 {

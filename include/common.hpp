@@ -41,7 +41,7 @@ auto get_default_slow_get_page()
 }
 
 template<typename KeyT = int, typename ValT = int>
-BeladyCache<KeyT, ValT> Belady_cache_ctor(std::istream& input = std::cin)
+Belady::BeladyCache<KeyT, ValT> Belady_cache_ctor(std::istream& input = std::cin)
 {
     size_t cap = 0;
     input >> cap;
@@ -52,18 +52,18 @@ BeladyCache<KeyT, ValT> Belady_cache_ctor(std::istream& input = std::cin)
     std::vector<KeyT> reqs;
     for (size_t req = 0; req < reqs_amt; req++)
     {
-        KeyT el = 0;
+        KeyT el{};
         input >> el;
         reqs.push_back(el);
     }
 
-    return BeladyCache<KeyT, ValT>(cap,  reqs);
+    return Belady::BeladyCache<KeyT, ValT>(cap,  reqs);
 }
 
 template<typename KeyT = int, typename ValT = int>
 struct LFUCacheData
 {
-    LFUCache<KeyT, ValT> cache;
+    LFU::LFUCache<KeyT, ValT> cache;
     std::vector<KeyT> reqs;
 };
 
@@ -79,16 +79,16 @@ LFUCacheData<KeyT, ValT> LFU_cache_ctor(std::istream& input = std::cin)
     std::vector<KeyT> reqs;
     for (size_t req = 0; req < reqs_amt; req++)
     {
-        KeyT el = 0;
+        KeyT el{};
         input >> el;
         reqs.push_back(el);
     }
 
-    return {LFUCache<KeyT, ValT>(cap), reqs};
+    return {LFU::LFUCache<KeyT, ValT>(cap), reqs};
 }
 
 template<typename KeyT = int, typename ValT = int>
-size_t run_Belady_cache(BeladyCache<KeyT, ValT> cache)
+size_t run_Belady_cache(Belady::BeladyCache<KeyT, ValT> cache)
 {
     auto reqs = cache.get_requests();
     size_t reqs_amt = reqs.size();

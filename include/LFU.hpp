@@ -2,7 +2,12 @@
 
 #include "Belady.hpp"
 
+namespace LFU
+{
+namespace consts
+{
 const size_t START_MATCH_VAL = 1;
+}
 
 template<typename KeyT = int, typename ValT = KeyT>
 class LFUCache
@@ -50,8 +55,6 @@ public:
         }
     }
 
-    //const std::set<CacheCell>& get_cache() const {return cache_;}
-
 private:
     void update_cache_cell(KeyT key)
     {
@@ -70,7 +73,7 @@ private:
         if (cache_.size() >= capacity_)
             del_page();
 
-        CacheCell new_cell{key, val, START_MATCH_VAL};
+        CacheCell new_cell{key, val, consts::START_MATCH_VAL};
 
         auto new_cell_it = cache_.insert(new_cell).first;
         hash_[key] = new_cell_it;
@@ -78,8 +81,13 @@ private:
 
     void del_page()
     {
+        if (cache_.empty())
+            return;
+
         auto del_cell = cache_.begin();
         hash_.erase(del_cell->key);
         cache_.erase(del_cell);
     }
 };
+
+}
